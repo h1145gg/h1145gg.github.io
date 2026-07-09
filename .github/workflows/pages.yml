@@ -58,7 +58,7 @@ jobs:
         run: sudo apt-get install rsync -y  # GitHub 默认环境可能没有 rsync
 
       - name: Deploy to Virtual Machine via rsync
-        uses: easingthemes/ssh-deploy@v5
+        uses: easingthemes/ssh-deploy@v4.0.5
         env:
           SSH_PRIVATE_KEY: ${{ secrets.VM_SSH_PRIVATE_KEY }}
           REMOTE_HOST: ${{ secrets.VM_HOST }}
