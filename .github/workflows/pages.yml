@@ -1,8 +1,8 @@
-name: Deploy Hexo Blog
+name: Deploy Hexo Blog to GitHub Pages
 
 on:
   push:
-    branches: [ main ]  # 当你推送到 main 分支时触发
+    branches: [ main ]  # 推送到 main 分支时触发
 
 jobs:
   # 任务1: 构建
@@ -42,27 +42,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-  # 任务3: 部署到你的虚拟机 (新增)
-  deploy-to-vm:
-    needs: build  # 确保构建任务先成功完成
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download built artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: github-pages  # 对应 upload-pages-artifact 生成的名称
-          path: ./public      # 将 artifact 解压到 public 目录
-
-      - name: Install rsync (if needed)
-        run: sudo apt-get install rsync -y  # GitHub 默认环境可能没有 rsync
-
-      - name: Deploy to Virtual Machine via rsync
-        uses: easingthemes/ssh-deploy@v4.0.5
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.VM_SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.VM_HOST }}
-          REMOTE_USER: ${{ secrets.VM_USER }}
-          TARGET: /var/www/html/   # 虚拟机上的目标目录
-          SOURCE: public/          # 本地要同步的目录
-          ARGS: -avz --delete      # 保持与本地测试一致的 rsync 参数
